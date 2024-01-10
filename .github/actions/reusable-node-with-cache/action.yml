@@ -1,0 +1,46 @@
+name: Node with Cache
+description: ""
+
+runs:
+    using: composite
+    steps:
+        - name: Install Node.js
+          uses: actions/setup-node@v3
+          with:
+              node-version: 20
+
+        - uses: pnpm/action-setup@v2
+          name: Install pnpm
+          with:
+              version: 8
+              run_install: false
+
+        - name: Get pnpm store directory
+          shell: bash
+          run: |
+              echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+        - uses: actions/cache@v3
+          id: cache-pnpm
+          name: Setup pnpm cache
+          with:
+              path: ${{ env.STORE_PATH }}
+              key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                  ${{ runner.os }}-pnpm-store-
+
+        - name: Cache node modules
+          id: cache
+          uses: actions/cache@v3
+          env:
+              cache-name: cache-node-modules
+          with:
+              path: node_modules
+              key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.workflow }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+        - name: Install dependencies
+          if: steps.cache.outputs.cache-hit != 'true'
+          shell: bash
+          run: |
+              pnpm install
+
