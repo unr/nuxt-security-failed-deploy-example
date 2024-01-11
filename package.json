@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-		"build:cloudflare": "NITRO_PRESET=cloudflare_pages nuxi build",
+    "build:cloudflare": "NITRO_PRESET=cloudflare_pages nuxi build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -14,8 +14,5 @@
     "nuxt": "^3.9.0",
     "vue": "^3.4.6",
     "vue-router": "^4.2.5"
-  },
-  "dependencies": {
-    "nuxt-security": "1.0.0"
   }
 }
