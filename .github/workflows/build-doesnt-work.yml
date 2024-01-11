@@ -1,0 +1,25 @@
+name: Example Fail on Build
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: preview
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # - run: |
+            #       echo shamefully-hoist=true >> ./.npmrc
+
+            - name: Prepare Node
+              uses: ./.github/actions/reusable-node-with-cache
+
+            - name: Build
+              run: |
+                  pnpm build:cloudflare
+
